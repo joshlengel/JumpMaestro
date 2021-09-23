@@ -5,6 +5,9 @@
 
 #include<vector>
 #include<cstdint>
+#include<string>
+
+class Player;
 
 class Rect : public AABB, public GameObject
 {
@@ -33,13 +36,18 @@ private:
 class Map : public GameObject
 {
 public:
-    Map();
+    Map(const std::string &file);
     ~Map();
 
     virtual void Update(float dt) override;
     virtual void Render(SDL_Window *window, SDL_Renderer *render, float camera_x, float camera_y) override;
+    virtual void HandleEvent(SDL_Event &event) override;
 
 private:
-    Bounds m_bounds;
-    std::vector<Rect> m_rects;
+    uint8_t m_fr, m_fg, m_fb;
+
+    Bounds *m_bounds;
+    std::vector<Rect*> m_rects;
+
+    Player *m_player;
 };

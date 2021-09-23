@@ -13,7 +13,7 @@ public:
     ~App();
 
     void Show();
-    void Start(const std::function<void(SDL_Window*, SDL_Renderer*)> &loop, const std::function<void(SDL_Event&)> &event);
+    void Start(const std::function<void(float, SDL_Window*, SDL_Renderer*)> &loop, const std::function<void(SDL_Event&)> &event);
 
 private:
     SDL_Window *m_window;
