@@ -136,6 +136,7 @@ void AABB::CheckCollision(const AABBInverse &other, Collision &collision) const
         float d2 = o_l - l;
         float d3 = t - o_t;
         float d4 = o_b - b;
+        float max_d = d1;
 
         if (d1 > 0)
         {
@@ -145,24 +146,30 @@ void AABB::CheckCollision(const AABBInverse &other, Collision &collision) const
             collision.nx = 1.0f;
             collision.ny = 0.0f;
         }
-        else if (d2 > 0)
+        
+        if (d2 > 0 && d2 > max_d)
         {
+            max_d = d2;
             collision.penetration_depth = d2;
             collision.cx = l + collision.penetration_depth * 0.5f;
             collision.cy = y;
             collision.nx = -1.0f;
             collision.ny = 0.0f;
         }
-        else if (d3 > 0)
+        
+        if (d3 > 0 && d3 > max_d)
         {
+            max_d = d3;
             collision.penetration_depth = d3;
             collision.cx = x;
             collision.cy = o_t + collision.penetration_depth * 0.5f;
             collision.nx = 0.0f;
             collision.ny = 1.0f;
         }
-        else if (d4 > 0)
+        
+        if (d4 > 0 && d4 > max_d)
         {
+            max_d = d4;
             collision.penetration_depth = d4;
             collision.cx = x;
             collision.cy = b + collision.penetration_depth * 0.5f;

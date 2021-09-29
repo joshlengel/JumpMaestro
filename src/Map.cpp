@@ -163,26 +163,32 @@ void Map::Update(float dt)
     for (Rect *rect : m_rects) colliders.push_back({ rect, rect });
     colliders.push_back({ m_bounds, m_bounds });
 
-    for (auto &c : colliders)
+    auto DoCollisions = [this, &colliders]()
     {
-        Collider *collider = c.first;
-        Rigid *rigid = c.second;
-
-        Collision collision;
-        collider->CheckCollision(*m_player, collision);
-
-        if (collision.colliding)
+        for (auto &c : colliders)
         {
-            // Resolve collision
-            m_player->x += collision.nx * collision.penetration_depth;
-            m_player->y += collision.ny * collision.penetration_depth;
-            
-            if (collision.nx) m_player->vx = 0.0f;
-            if (collision.ny) m_player->vy = 0.0f;
-            if (collision.ny > 0.0f)
-                m_player->SetHitGround(rigid->GetFriction());
+            Collider *collider = c.first;
+            Rigid *rigid = c.second;
+
+            Collision collision;
+            collider->CheckCollision(*m_player, collision);
+
+            if (collision.colliding)
+            {
+                // Resolve collision
+                m_player->x += collision.nx * collision.penetration_depth;
+                m_player->y += collision.ny * collision.penetration_depth;
+                
+                if (collision.nx) m_player->vx = 0.0f;
+                if (collision.ny) m_player->vy = 0.0f;
+                if (collision.ny > 0.0f)
+                    m_player->SetHitGround(rigid->GetFriction());
+            }
         }
-    }
+    };
+
+    DoCollisions();
+    DoCollisions();
 
     m_target->Update(dt);
 
