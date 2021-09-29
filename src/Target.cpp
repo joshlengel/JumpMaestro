@@ -33,7 +33,7 @@ void Target::Update(float dt)
     float p_hw = m_player.width * 0.5f;
     float p_hh = m_player.height * 0.5f;
 
-    if (m_player.x - p_hw > x - hw && m_player.x + p_hw < x + hw && m_player.y - p_hh > y - hh && m_player.y + p_hh < y + hh)
+    if (m_player.x - p_hw >= x - hw && m_player.x + p_hw <= x + hw && m_player.y - p_hh >= y - hh && m_player.y + p_hh <= y + hh)
     {
         m_elapsed += dt;
     }

@@ -1,0 +1,14 @@
+{
+    "epsilon": 0.01,
+    "players": {
+        "default": {
+            "speed": 1.0,
+            "jump_speed": 2.5
+        }
+    },
+    "rects": {
+        "default": {
+            "friction": 0.5
+        }
+    }
+}

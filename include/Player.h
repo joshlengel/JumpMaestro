@@ -15,8 +15,11 @@ public:
     virtual void Update(float dt) override;
     virtual void HandleEvent(SDL_Event &event) override;
 
+    void SetGravity(float gravity);
+    void SetAirDrag(float air_drag);
+
     bool HitGround() const;
-    void SetHitGround(bool hit_ground);
+    void SetHitGround(float friction);
     void Jump();
 
 private:
@@ -26,4 +29,8 @@ private:
     bool m_buttons[2];
 
     QuadRenderer &m_renderer;
+
+    float m_speed, m_jump_speed;
+    float m_gravity;
+    float m_air_drag, m_friction;
 };

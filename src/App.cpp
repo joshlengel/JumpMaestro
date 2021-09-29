@@ -1,4 +1,5 @@
 #include"App.h"
+#include"Constants.h"
 
 #include<iostream>
 #include<chrono>
@@ -31,6 +32,8 @@ App::App(int width, int height, const char *title):
         std::cerr << "Error initializing GLEW" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    Constants::Init("assets/constants.json");
 }
 
 App::~App()

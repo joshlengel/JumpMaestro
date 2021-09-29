@@ -1,15 +1,10 @@
 #include"Player.h"
+#include"Constants.h"
 
 #include<SDL2/SDL.h>
 
 #include<cstring>
-
-static const float AIR_DRAG_COEFFICIENT = 0.1f;
-static const float GROUND_DRAG_COEFFICIENT = 0.5f;
-static const float EPSILON = 0.01f;
-static const float SPEED = 1.0f;
-static const float JUMP_SPEED = 2.5f;
-static const float GRAVITY = 9.81f;
+#include<iostream>
 
 Player::Player(float x, float y, float scale, float r, float g, float b, QuadRenderer &renderer):
     AABB(x, y, 0.0f, 0.0f, scale, scale),
@@ -18,6 +13,10 @@ Player::Player(float x, float y, float scale, float r, float g, float b, QuadRen
     m_renderer(renderer)
 {
     std::memset(m_buttons, 0, sizeof(m_buttons));
+
+    const PlayerInfo &info = Constants::PLAYERS["default"];
+    m_speed = info.speed;
+    m_jump_speed = info.jump_speed;
 }
 
 void Player::Render(SDL_Window *window, float camera_x, float camera_y)
@@ -38,15 +37,15 @@ void Player::Update(float dt)
 {
     float set_vx = 0.0f;
     float set_vy = 0.0f;
-    if (m_buttons[0]) set_vx += -SPEED;
-    if (m_buttons[1]) set_vx +=  SPEED;
+    if (m_buttons[0]) set_vx += -m_speed;
+    if (m_buttons[1]) set_vx +=  m_speed;
 
     if (set_vx != 0.0f) vx = set_vx;
     if (set_vy != 0.0f) vy = set_vy;
 
     float v_sqr = vx * vx + vy * vy;
     float v;
-    if (v_sqr < EPSILON * EPSILON)
+    if (v_sqr < Constants::EPSILON * Constants::EPSILON)
     {
         vx = 0.0f;
         vy = 0.0f;
@@ -57,13 +56,11 @@ void Player::Update(float dt)
         v = std::sqrt(v_sqr);
     }
 
-    float drag_x = m_on_ground? (v > EPSILON? -GRAVITY * GROUND_DRAG_COEFFICIENT * vx / v : 0) : -0.5f / width * AIR_DRAG_COEFFICIENT * vx * v;
-    float drag_y = -0.5f / width * AIR_DRAG_COEFFICIENT * vy * v;
-
-    float gravity = -GRAVITY;
+    float drag_x = m_on_ground? (v > Constants::EPSILON? -m_gravity * m_friction * vx / v : 0) : -0.5f / width * m_air_drag * vx * v;
+    float drag_y = -0.5f / width * m_air_drag * vy * v;
 
     float ax = drag_x;
-    float ay = drag_y + gravity;
+    float ay = drag_y - m_gravity;
 
     float dvx = ax * dt;
     float dvy = ay * dt;
@@ -81,6 +78,8 @@ void Player::Update(float dt)
 
     x += vx * dt;
     y += vy * dt;
+
+    m_on_ground = false;
 }
 
 void Player::HandleEvent(SDL_Event &event)
@@ -104,13 +103,16 @@ void Player::HandleEvent(SDL_Event &event)
     }
 }
 
+void Player::SetGravity(float gravity) { m_gravity = gravity; }
+void Player::SetAirDrag(float air_drag) { m_air_drag = air_drag; }
+
 bool Player::HitGround() const { return m_on_ground; }
-void Player::SetHitGround(bool hit_ground) { m_on_ground = hit_ground; }
+void Player::SetHitGround(float friction) { m_on_ground = true; m_friction = friction; }
 void Player::Jump()
 {
     if (m_on_ground)
     {
         m_on_ground = false;
-        vy = JUMP_SPEED;
+        vy = m_jump_speed;
     }
 }

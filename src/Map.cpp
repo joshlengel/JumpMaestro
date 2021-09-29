@@ -1,19 +1,27 @@
 #include"Map.h"
 #include"Player.h"
 #include"Target.h"
+#include"Constants.h"
 
 #include<nlohmann/json.hpp>
 
 #include<fstream>
 #include<iostream>
 
-Rect::Rect(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer):
-    AABB(x, y, 0.0f, 0.0f, width, height),
+Rigid::Rigid(float r, float g, float b, QuadRenderer &renderer):
     r(r), g(g), b(b),
-    m_renderer(renderer)
+    renderer(renderer),
+    friction(Constants::RECTS["default"].friction)
 {}
 
-void Rect::Update(float dt)
+void Rigid::Update(float dt)
+{}
+
+float Rigid::GetFriction() const { return friction; }
+
+Rect::Rect(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer):
+    AABB(x, y, 0.0f, 0.0f, width, height),
+    Rigid(r, g, b, renderer)
 {}
 
 void Rect::Render(SDL_Window *window, float camera_x, float camera_y)
@@ -27,16 +35,12 @@ void Rect::Render(SDL_Window *window, float camera_x, float camera_y)
     quad.g = g;
     quad.b = b;
     quad.a = 1.0f;
-    m_renderer.Add(quad);
+    renderer.Add(quad);
 }
 
 Bounds::Bounds(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer):
     AABBInverse(x, y, 0.0f, 0.0f, width, height),
-    r(r), g(g), b(b),
-    m_renderer(renderer)
-{}
-
-void Bounds::Update(float dt)
+    Rigid(r, g, b, renderer)
 {}
 
 void Bounds::Render(SDL_Window *window, float camera_x, float camera_y)
@@ -50,7 +54,7 @@ void Bounds::Render(SDL_Window *window, float camera_x, float camera_y)
     quad.g = g;
     quad.b = b;
     quad.a = 1.0f;
-    m_renderer.Add(quad);
+    renderer.Add(quad);
 }
 
 Map::Map(const std::string &file)
@@ -124,6 +128,13 @@ Map::Map(const std::string &file)
 
         m_rects.push_back(new Rect((rect_l + rect_r) * 0.5f, (rect_b + rect_t) * 0.5f, rect_r - rect_l, rect_t - rect_b, m_fr, m_fg, m_fb, m_renderer));
     }
+
+    // Other
+    float gravity = json["gravity"].get<float>();
+    float air_drag_coefficient = json["air_drag_coefficient"].get<float>();
+
+    m_player->SetGravity(gravity);
+    m_player->SetAirDrag(air_drag_coefficient);
 }
 
 Map::~Map()
@@ -145,15 +156,20 @@ void Map::Update(float dt)
     }
 
     m_player->Update(dt);
-    m_player->SetHitGround(false);
 
-    std::vector<Collider*> colliders(m_rects.begin(), m_rects.end());
-    colliders.push_back(m_bounds);
+    std::vector<std::pair<Collider*, Rigid*>> colliders;
+    colliders.reserve(m_rects.size() + 1);
 
-    for (Collider *c : colliders)
+    for (Rect *rect : m_rects) colliders.push_back({ rect, rect });
+    colliders.push_back({ m_bounds, m_bounds });
+
+    for (auto &c : colliders)
     {
+        Collider *collider = c.first;
+        Rigid *rigid = c.second;
+
         Collision collision;
-        c->CheckCollision(*m_player, collision);
+        collider->CheckCollision(*m_player, collision);
 
         if (collision.colliding)
         {
@@ -163,7 +179,8 @@ void Map::Update(float dt)
             
             if (collision.nx) m_player->vx = 0.0f;
             if (collision.ny) m_player->vy = 0.0f;
-            if (collision.ny > 0.0f) m_player->SetHitGround(true);
+            if (collision.ny > 0.0f)
+                m_player->SetHitGround(rigid->GetFriction());
         }
     }
 
