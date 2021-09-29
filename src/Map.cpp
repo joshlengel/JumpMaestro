@@ -1,5 +1,6 @@
 #include"Map.h"
 #include"Player.h"
+#include"Target.h"
 
 #include<nlohmann/json.hpp>
 
@@ -64,6 +65,7 @@ Map::Map(const std::string &file)
     nlohmann::json json;
     f >> json;
 
+    // Player
     auto &player_obj = json["player"];
     float player_scale = player_obj["scale"].get<float>();
 
@@ -76,6 +78,20 @@ Map::Map(const std::string &file)
     float player_color_g = player_color_arr[1].get<float>();
     float player_color_b = player_color_arr[2].get<float>();
 
+    // Target
+    auto &target_obj = json["target"];
+    auto &target_rect_arr = target_obj["rect"];
+    float target_rect_l = target_rect_arr[0].get<float>();
+    float target_rect_r = target_rect_arr[1].get<float>();
+    float target_rect_b = target_rect_arr[2].get<float>();
+    float target_rect_t = target_rect_arr[3].get<float>();
+
+    auto &target_color_arr = target_obj["color"];
+    float target_color_r = target_color_arr[0].get<float>();
+    float target_color_g = target_color_arr[1].get<float>();
+    float target_color_b = target_color_arr[2].get<float>();
+
+    // Foreground/Background
     auto &foreground_arr = json["foreground"];
     m_fr = foreground_arr[0].get<float>();
     m_fg = foreground_arr[1].get<float>();
@@ -86,6 +102,7 @@ Map::Map(const std::string &file)
     float b_g = background_arr[1].get<float>();
     float b_b = background_arr[2].get<float>();
 
+    // Bounds
     auto &bounds_arr = json["bounds"];
     float bounds_l = bounds_arr[0].get<float>();
     float bounds_r = bounds_arr[1].get<float>();
@@ -93,8 +110,10 @@ Map::Map(const std::string &file)
     float bounds_t = bounds_arr[3].get<float>();
 
     m_player = new Player(player_pos_x, player_pos_y, player_scale, player_color_r, player_color_g, player_color_b, m_renderer);
+    m_target = new Target((target_rect_l + target_rect_r) * 0.5f, (target_rect_b + target_rect_t) * 0.5f, target_rect_r - target_rect_l, target_rect_t - target_rect_b, target_color_r, target_color_g, target_color_b, m_renderer, *m_player);
     m_bounds = new Bounds((bounds_l + bounds_r) * 0.5f, (bounds_b + bounds_t) * 0.5f, bounds_r - bounds_l, bounds_t - bounds_b, b_r, b_g, b_b, m_renderer);
 
+    // Rects
     auto rects_arr = json["rects"];
     for (auto &rect : rects_arr)
     {
@@ -109,6 +128,7 @@ Map::Map(const std::string &file)
 
 Map::~Map()
 {
+    delete m_target;
     delete m_player;
     delete m_bounds;
 
@@ -146,6 +166,14 @@ void Map::Update(float dt)
             if (collision.ny > 0.0f) m_player->SetHitGround(true);
         }
     }
+
+    m_target->Update(dt);
+
+    if (m_target->Finished())
+    {
+        std::cout << "You won!" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
 }
 
 void Map::Render(SDL_Window *window, float camera_x, float camera_y)
@@ -153,7 +181,9 @@ void Map::Render(SDL_Window *window, float camera_x, float camera_y)
     glClearColor(m_fr, m_fg, m_fb, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     
+
     m_bounds->Render(window, camera_x, camera_y);
+    m_target->Render(window, camera_x, camera_y);
 
     for (Rect *rect : m_rects)
     {
@@ -175,4 +205,5 @@ void Map::HandleEvent(SDL_Event &event)
     }
 
     m_player->HandleEvent(event);
+    m_target->HandleEvent(event);
 }

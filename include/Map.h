@@ -9,6 +9,7 @@
 #include<string>
 
 class Player;
+class Target;
 
 class Rect : public AABB, public GameObject
 {
@@ -53,6 +54,7 @@ private:
     std::vector<Rect*> m_rects;
 
     Player *m_player;
+    Target *m_target;
 
     QuadRenderer m_renderer;
 };

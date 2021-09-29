@@ -4,11 +4,11 @@
 
 #include<cstring>
 
-static const float AIR_DRAG_COEFFICIENT = 0.7f;
+static const float AIR_DRAG_COEFFICIENT = 0.1f;
 static const float GROUND_DRAG_COEFFICIENT = 0.5f;
-static const float EPSILON = 0.001f;
+static const float EPSILON = 0.01f;
 static const float SPEED = 1.0f;
-static const float JUMP_SPEED = 2.0f;
+static const float JUMP_SPEED = 2.5f;
 static const float GRAVITY = 9.81f;
 
 Player::Player(float x, float y, float scale, float r, float g, float b, QuadRenderer &renderer):
@@ -57,16 +57,27 @@ void Player::Update(float dt)
         v = std::sqrt(v_sqr);
     }
 
-    float drag_x = v == 0? 0:/*0 : -0.5f / width * AIR_DRAG_COEFFICIENT * vx * v*/ - m_on_ground * GRAVITY * GROUND_DRAG_COEFFICIENT * vx / v;
-    float drag_y = v == 0? /*0 : -0.5f / width * AIR_DRAG_COEFFICIENT * vy * v*/0:0;
+    float drag_x = m_on_ground? (v > EPSILON? -GRAVITY * GROUND_DRAG_COEFFICIENT * vx / v : 0) : -0.5f / width * AIR_DRAG_COEFFICIENT * vx * v;
+    float drag_y = -0.5f / width * AIR_DRAG_COEFFICIENT * vy * v;
 
     float gravity = -GRAVITY;
 
     float ax = drag_x;
     float ay = drag_y + gravity;
 
-    vx += ax * dt;
-    vy += ay * dt;
+    float dvx = ax * dt;
+    float dvy = ay * dt;
+
+    if ((vx > 0 && vx < -dvx) || (vx < 0 && vx > -dvx))
+    {
+        vx = 0;
+    }
+    else
+    {
+        vx += dvx;
+    }
+
+    vy += dvy;
 
     x += vx * dt;
     y += vy * dt;
