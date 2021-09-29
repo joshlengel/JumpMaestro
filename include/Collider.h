@@ -23,10 +23,13 @@ public:
     virtual void CheckCollision(const Collider &other, Collision &collision) const = 0;
     constexpr virtual Type GetType() const = 0;
 
-protected:
+public:
     float x, y;
     float vx, vy;
 };
+
+class AABB;
+class AABBInverse;
 
 class AABB : public Collider
 {
@@ -36,8 +39,12 @@ public:
     virtual void CheckCollision(const Collider &other, Collision &collision) const override;
     virtual Type GetType() const override;
 
-protected:
+public:
     float width, height;
+
+private:
+    void CheckCollision(const AABB &aabb, Collision &collision) const;
+    void CheckCollision(const AABBInverse &aabb, Collision &collision) const;
 };
 
 class AABBInverse : public Collider
@@ -48,6 +55,6 @@ public:
     virtual void CheckCollision(const Collider &other, Collision &collision) const override;
     virtual Type GetType() const override;
 
-protected:
+public:
     float width, height;
 };

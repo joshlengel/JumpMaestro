@@ -1,19 +1,17 @@
 #include"App.h"
 #include"Map.h"
 
-#include<SDL2/SDL.h>
+struct SDL_Window;
 
 static const int WIDTH = 800;
 static const int HEIGHT = 600;
 
 static Map *map;
 
-void Loop(float dt, SDL_Window *window, SDL_Renderer *renderer)
+void Loop(float dt, SDL_Window *window)
 {
     map->Update(dt);
-    map->Render(window, renderer, 0.0f, 0.0f);
-
-    SDL_RenderPresent(renderer);
+    map->Render(window, 0.0f, 0.0f);
 }
 
 void Event(SDL_Event &event)

@@ -16,10 +16,14 @@ set(DEPS ${ROOT}/deps)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(${DEPS}/JSON)
 
+set(OpenGL_GL_PREFERENCE "LEGACY")
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+
 # build
 set(EXECUTABLE_OUTPUT_PATH ${BIN})
 
 file(GLOB_RECURSE sources "${INCLUDE}/*.h" "${SRC}/*.cpp")
 add_executable(JumpMaestro ${sources})
 target_include_directories(JumpMaestro PRIVATE ${INCLUDE})
-target_link_libraries(JumpMaestro PRIVATE SDL2 SDL2_ttf nlohmann_json::nlohmann_json)
+target_link_libraries(JumpMaestro PRIVATE SDL2 SDL2_ttf nlohmann_json::nlohmann_json GLEW::GLEW OpenGL::GL)
