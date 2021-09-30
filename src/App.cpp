@@ -1,5 +1,6 @@
 #include"App.h"
 #include"Constants.h"
+#include"StartState.h"
 
 #include<iostream>
 #include<chrono>
@@ -10,6 +11,7 @@
 #include<GL/glew.h>
 
 App::App(int width, int height, const char *title):
+    m_machine(),
     m_window()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -34,6 +36,8 @@ App::App(int width, int height, const char *title):
     }
 
     Constants::Init("assets/constants.json");
+
+    m_machine.Init<StartState>();
 }
 
 App::~App()
@@ -41,31 +45,29 @@ App::~App()
     SDL_Quit();
 }
 
-void App::Show()
+void App::Start()
 {
     SDL_ShowWindow(m_window);
-}
 
-void App::Start(const std::function<void(float, SDL_Window*)> &loop, const std::function<void(SDL_Event&)> &event)
-{
     std::chrono::high_resolution_clock::time_point t1, t2;
     t1 = t2 = std::chrono::high_resolution_clock::now();
 
-    while (true)
+    while (!m_machine.ShouldExit())
     {
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+            m_machine.HandleEvent(e);
+            
             if (e.type == SDL_QUIT) return;
-
-            event(e);
         }
 
         t2 = std::chrono::high_resolution_clock::now();
         float dt = std::chrono::duration_cast<std::chrono::duration<float>>(t2 - t1).count();
         t1 = t2;
 
-        loop(dt, m_window);
+        m_machine.Update(dt);
+        m_machine.Render(m_window);
 
         SDL_GL_SwapWindow(m_window);
     }

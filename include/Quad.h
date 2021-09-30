@@ -3,6 +3,7 @@
 #include<GL/glew.h>
 
 #include<vector>
+#include<map>
 
 struct SDL_Window;
 
@@ -12,6 +13,8 @@ struct Quad
     float width, height;
 
     float r, g, b, a;
+
+    GLuint texture = -1;
 };
 
 class QuadRenderer
@@ -21,12 +24,10 @@ public:
     ~QuadRenderer();
 
     void Add(const Quad &quad);
-    void Flush();
     void Render(SDL_Window *window);
-    void FlushAndRender(SDL_Window *window);
 
 private:
-    std::vector<Quad> m_quads;
+    std::map<GLuint, std::vector<Quad>> m_quads;
     size_t m_num_indices;
 
     GLuint m_vao_id;
@@ -36,4 +37,6 @@ private:
     GLuint m_shader_ids[2];
 
     GLint m_aspect_ratio_location;
+
+    GLuint m_default_texture;
 };

@@ -54,6 +54,8 @@ public:
     virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
     virtual void HandleEvent(SDL_Event &event) override;
 
+    bool Finished() const;
+
 private:
     float m_fr, m_fg, m_fb;
 

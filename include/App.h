@@ -1,9 +1,8 @@
 #pragma once
 
-#include<functional>
+#include"State.h"
 
 struct SDL_Window;
-union SDL_Event;
 
 class App
 {
@@ -11,9 +10,9 @@ public:
     App(int width, int height, const char *title);
     ~App();
 
-    void Show();
-    void Start(const std::function<void(float, SDL_Window*)> &loop, const std::function<void(SDL_Event&)> &event);
+    void Start();
 
 private:
+    StateMachine m_machine;
     SDL_Window *m_window;
 };

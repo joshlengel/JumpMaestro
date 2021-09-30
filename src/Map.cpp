@@ -191,12 +191,6 @@ void Map::Update(float dt)
     DoCollisions();
 
     m_target->Update(dt);
-
-    if (m_target->Finished())
-    {
-        std::cout << "You won!" << std::endl;
-        exit(EXIT_SUCCESS);
-    }
 }
 
 void Map::Render(SDL_Window *window, float camera_x, float camera_y)
@@ -215,7 +209,7 @@ void Map::Render(SDL_Window *window, float camera_x, float camera_y)
 
     m_player->Render(window, camera_x, camera_y);
 
-    m_renderer.FlushAndRender(window);
+    m_renderer.Render(window);
 }
 
 void Map::HandleEvent(SDL_Event &event)
@@ -230,3 +224,5 @@ void Map::HandleEvent(SDL_Event &event)
     m_player->HandleEvent(event);
     m_target->HandleEvent(event);
 }
+
+bool Map::Finished() const { return m_target->Finished(); }
