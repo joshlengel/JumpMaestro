@@ -7,6 +7,8 @@
 
 struct SDL_Window;
 
+class Texture;
+
 struct Quad
 {
     float x, y;
@@ -14,7 +16,7 @@ struct Quad
 
     float r, g, b, a;
 
-    GLuint texture = -1;
+    Texture *texture = nullptr;
 };
 
 class QuadRenderer
@@ -27,7 +29,7 @@ public:
     void Render(SDL_Window *window);
 
 private:
-    std::map<GLuint, std::vector<Quad>> m_quads;
+    std::map<Texture*, std::vector<Quad>> m_quads;
     size_t m_num_indices;
 
     GLuint m_vao_id;
@@ -38,5 +40,5 @@ private:
 
     GLint m_aspect_ratio_location;
 
-    GLuint m_default_texture;
+    Texture *m_default_texture;
 };

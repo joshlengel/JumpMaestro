@@ -1,4 +1,5 @@
 #include"Quad.h"
+#include"Texture.h"
 
 #include<iostream>
 #include<string>
@@ -102,8 +103,8 @@ QuadRenderer::QuadRenderer()
     glDetachShader(m_program_id, m_shader_ids[0]);
     glDetachShader(m_program_id, m_shader_ids[1]);
 
-    glGenTextures(1, &m_default_texture);
-    glBindTexture(GL_TEXTURE_2D, m_default_texture);
+    m_default_texture = new Texture;
+    m_default_texture->Bind();
 
     unsigned char pixels[4] = { 255U, 255U, 255U, 255U };
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -121,7 +122,7 @@ QuadRenderer::~QuadRenderer()
     glDeleteShader(m_shader_ids[0]);
     glDeleteShader(m_shader_ids[1]);
 
-    glDeleteTextures(1, &m_default_texture);
+    delete m_default_texture;
 }
 
 void QuadRenderer::Add(const Quad &quad)
@@ -142,10 +143,10 @@ void QuadRenderer::Render(SDL_Window *window)
 
     for (auto &entry : m_quads)
     {
-        GLuint texture = entry.first == -1? m_default_texture : entry.first;
+        Texture *texture = entry.first? entry.first : m_default_texture;
         std::vector<Quad> &quads = entry.second;
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        texture->Bind();
 
         std::vector<float> data;
         data.reserve(quads.size() * (2 + 2 + 4) * 4);
