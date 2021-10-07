@@ -1,48 +1,16 @@
 #pragma once
 
 #include"GameObject.h"
-#include"Collider.h"
 #include"Quad.h"
 
 #include<vector>
 #include<cstdint>
 #include<string>
 
+class Rect;
+class Bounds;
 class Player;
 class Target;
-
-class Rigid : public GameObject
-{
-public:
-    Rigid(float r, float g, float b, QuadRenderer &renderer);
-
-    virtual void Update(float dt) override;
-    virtual void Render(SDL_Window *window, float camera_x, float camera_y) = 0;
-
-    float GetFriction() const;
-
-protected:
-    float r, g, b;
-    QuadRenderer &renderer;
-
-    float friction;
-};
-
-class Rect : public AABB, public Rigid
-{
-public:
-    Rect(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer);
-
-    virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
-};
-
-class Bounds : public AABBInverse, public Rigid
-{
-public:
-    Bounds(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer);
-
-    virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
-};
 
 class Map : public GameObject
 {

@@ -1,14 +1,28 @@
 {
-    "epsilon": 0.01,
+    "epsilon": 0.0001,
     "players": {
         "default": {
-            "speed": 1.0,
+            "acceleration": 50.0,
+            "max_speed": 1.0,
             "jump_speed": 2.5
         }
     },
     "rects": {
         "default": {
-            "friction": 0.5
+            "friction": 0.5,
+            "bounciness": 0.0
+        },
+        "ice": {
+            "friction": 0.1,
+            "bounciness": 0.0
+        },
+        "sticky": {
+            "friction": 0.9,
+            "bounciness": 0.0
+        },
+        "bouncy": {
+            "friction": 0.6,
+            "bounciness": 1.0
         }
     }
 }

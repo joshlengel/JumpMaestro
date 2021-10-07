@@ -9,7 +9,7 @@ class Player;
 class Target : public AABB, public GameObject
 {
 public:
-    Target(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer, const Player &player);
+    Target(float left, float right, float bottom, float top, float r, float g, float b, QuadRenderer &renderer, const Player &player);
 
     virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
     virtual void Update(float dt) override;

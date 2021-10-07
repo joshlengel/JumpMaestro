@@ -27,12 +27,12 @@ void Constants::Init(const std::string &file)
     for (auto &entry : player_objs.items())
     {
         auto &value = entry.value();
-        PLAYERS[entry.key()] = { .speed=value["speed"].get<float>(), .jump_speed=value["jump_speed"].get<float>() };
+        PLAYERS[entry.key()] = { .acceleration=value["acceleration"].get<float>(), .max_speed=value["max_speed"].get<float>(), .jump_speed=value["jump_speed"].get<float>() };
     }
 
     for (auto &entry : rect_objs.items())
     {
         auto &value = entry.value();
-        RECTS[entry.key()] = { .friction=value["friction"].get<float>() };
+        RECTS[entry.key()] = { .friction=value["friction"].get<float>(), .bounciness=value["bounciness"].get<float>() };
     }
 }

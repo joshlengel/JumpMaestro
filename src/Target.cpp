@@ -4,8 +4,8 @@
 
 static const float TARGET_MIN_REST_THRESHOLD = 1.5f;
 
-Target::Target(float x, float y, float width, float height, float r, float g, float b, QuadRenderer &renderer, const Player &player):
-    AABB(x, y, 0.0f, 0.0f, width, height),
+Target::Target(float left, float right, float bottom, float top, float r, float g, float b, QuadRenderer &renderer, const Player &player):
+    AABB(left, right, bottom, top),
     m_r(r), m_g(g), m_b(b),
     m_renderer(renderer),
     m_player(player)
@@ -14,10 +14,10 @@ Target::Target(float x, float y, float width, float height, float r, float g, fl
 void Target::Render(SDL_Window *window, float camera_x, float camera_y)
 {
     Quad quad;
-    quad.x = x - camera_x;
-    quad.y = y - camera_y;
-    quad.width = width;
-    quad.height = height;
+    quad.x = (AABB::l + AABB::r) * 0.5f - camera_x;
+    quad.y = (AABB::b + AABB::t) * 0.5f - camera_y;
+    quad.width = AABB::r - AABB::l;
+    quad.height = AABB::t - AABB::b;
     quad.r = m_r;
     quad.g = m_g;
     quad.b = m_b;
@@ -27,13 +27,9 @@ void Target::Render(SDL_Window *window, float camera_x, float camera_y)
 
 void Target::Update(float dt)
 {
-    float hw = width * 0.5f;
-    float hh = height * 0.5f;
+    float p_hs = m_player.scale * 0.5f;
 
-    float p_hw = m_player.width * 0.5f;
-    float p_hh = m_player.height * 0.5f;
-
-    if (m_player.x - p_hw >= x - hw && m_player.x + p_hw <= x + hw && m_player.y - p_hh >= y - hh && m_player.y + p_hh <= y + hh)
+    if (m_player.x - p_hs >= AABB::l && m_player.x + p_hs <= AABB::r && m_player.y - p_hs >= AABB::b && m_player.y + p_hs <= AABB::t)
     {
         m_elapsed += dt;
     }

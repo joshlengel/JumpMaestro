@@ -5,13 +5,15 @@
 
 struct PlayerInfo
 {
-    float speed;
+    float acceleration;
+    float max_speed;
     float jump_speed;
 };
 
 struct RectInfo
 {
     float friction;
+    float bounciness;
 };
 
 class Constants

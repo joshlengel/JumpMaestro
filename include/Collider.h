@@ -1,60 +1,43 @@
 #pragma once
 
+class Collider;
+
 struct Collision
 {
-    bool colliding;
-    float cx, cy;
+    float dt;
+    float x, y;
     float nx, ny;
-    float penetration_depth;
+    const Collider *collider;
 };
+
+class Player;
 
 class Collider
 {
 public:
-    Collider(float x, float y, float vx, float vy);
     virtual ~Collider() = default;
 
-    enum class Type
-    {
-        AABB,
-        AABB_INVERSE
-    };
-
-    virtual void CheckCollision(const Collider &other, Collision &collision) const = 0;
-    constexpr virtual Type GetType() const = 0;
-
-public:
-    float x, y;
-    float vx, vy;
+    virtual void CheckCollision(const Player &player, Collision &coll) const = 0;
 };
-
-class AABB;
-class AABBInverse;
 
 class AABB : public Collider
 {
 public:
-    AABB(float x, float y, float vx, float vy, float width, float height);
+    AABB(float l, float r, float b, float t);
 
-    virtual void CheckCollision(const Collider &other, Collision &collision) const override;
-    virtual Type GetType() const override;
+    virtual void CheckCollision(const Player &player, Collision &coll) const override;
 
 public:
-    float width, height;
-
-private:
-    void CheckCollision(const AABB &aabb, Collision &collision) const;
-    void CheckCollision(const AABBInverse &aabb, Collision &collision) const;
+    float l, r, b, t;
 };
 
 class AABBInverse : public Collider
 {
 public:
-    AABBInverse(float x, float y, float vx, float vy, float width, float height);
+    AABBInverse(float l, float r, float b, float t);
 
-    virtual void CheckCollision(const Collider &other, Collision &collision) const override;
-    virtual Type GetType() const override;
+    virtual void CheckCollision(const Player &player, Collision &coll) const override;
 
 public:
-    float width, height;
+    float l, r, b, t;
 };

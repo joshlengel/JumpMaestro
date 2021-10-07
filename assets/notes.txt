@@ -1,0 +1,32 @@
+- Spikes (Lava spikes which drip?)
+- Sticky: high friction, player linearly falls from vertical block but regains a jump)
+
+- New physics engine:
+Idea 1 (continuous physics):
+-> Colliders -> (Check for collision within timespan, calculate position, resulting velocities)
+-> No indication for collision with wall (after handling)
+
+Idea 2 (discrete physics):
+-> Create larger collider than real object -> Do discrete collisions with that rectangle and smaller one
+-> Can check for sliding along wall (sticky blocks)
+
+Combine the two:
+-> Coninuous detection + Larger bouncing AABB
+-> Smooth collisions, sliding detections
+
+class Collider:
+- position, velocity
+- abstract method: void CheckCollision(const Player &player, Collision &coll);
+-> Collision is input/output object, contains timeframe "dt" which should be replaced by the time after which a collision will occur
+-> pos, position of player after "dt"
+-> vel, velocity of player after "dt"
+
+class Rigid:
+-> composite class
+-> Extends GameObject
+- Collider
+- Renderable
+
+class ColliderEngine:
+- Colliders[] (list)
+- Update: void Update(float dt, size_t max_iters)
