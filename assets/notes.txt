@@ -2,7 +2,7 @@
 - Sticky: high friction, player linearly falls from vertical block but regains a jump)
 
 - New physics engine:
-Idea 1 (continuous physics):
+Idea 1 (continuous physics): !!DONE!!
 -> Colliders -> (Check for collision within timespan, calculate position, resulting velocities)
 -> No indication for collision with wall (after handling)
 

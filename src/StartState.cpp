@@ -3,9 +3,12 @@
 #include"Texture.h"
 
 #include<cmath>
+#include<iostream>
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_ttf.h>
+#include<SDL2/SDL_audio.h>
+#include<SDL2/SDL_mixer.h>
 #include<GL/glew.h>
 
 void StartState::OnEnter(void *data)
