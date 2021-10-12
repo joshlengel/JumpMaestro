@@ -1,6 +1,6 @@
 [submodule "deps/JSON"]
 	path = deps/JSON
-	url = ./deps/JSON_tmp
+	url = https://github.com/nlohmann/JSON
 [submodule "deps/SDL"]
 	path = deps/SDL
 	url = https://github.com/libsdl-org/SDL
