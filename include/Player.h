@@ -11,9 +11,9 @@ class Player : public GameObject
 public:
     Player(float x, float y, float scale, float r, float g, float b, QuadRenderer &renderer);
 
-    virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
+    virtual void Render(GLFWwindow *window, float camera_x, float camera_y) override;
     virtual void Update(float dt) override;
-    virtual void HandleEvent(SDL_Event &event) override;
+    //virtual void HandleEvent(SDL_Event &event) override;
 
     void SetGravity(float gravity);
     void SetAirDrag(float air_drag);

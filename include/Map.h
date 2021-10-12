@@ -19,8 +19,8 @@ public:
     ~Map();
 
     virtual void Update(float dt) override;
-    virtual void Render(SDL_Window *window, float camera_x, float camera_y) override;
-    virtual void HandleEvent(SDL_Event &event) override;
+    virtual void Render(GLFWwindow *window, float camera_x, float camera_y) override;
+    //virtual void HandleEvent(SDL_Event &event) override;
 
     bool Finished() const;
 

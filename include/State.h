@@ -2,8 +2,7 @@
 
 #include<type_traits>
 
-struct SDL_Window;
-union SDL_Event;
+struct GLFWwindow;
 
 class State
 {
@@ -13,8 +12,8 @@ public:
 
     virtual void OnEnter(void *data) = 0;
     virtual void OnUpdate(float dt) = 0;
-    virtual void OnRender(SDL_Window *window) = 0;
-    virtual void HandleEvent(SDL_Event &event) = 0;
+    virtual void OnRender(GLFWwindow *window) = 0;
+    //virtual void HandleEvent(SDL_Event &event) = 0;
     virtual void OnExit() = 0;
 
     bool ShouldExit() const;
@@ -40,8 +39,8 @@ public:
     void Init(void *arg = nullptr);
 
     void Update(float dt);
-    void Render(SDL_Window *window);
-    void HandleEvent(SDL_Event &event);
+    void Render(GLFWwindow *window);
+    //void HandleEvent(SDL_Event &event);
 
     bool ShouldExit() const;
 

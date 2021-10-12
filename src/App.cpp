@@ -5,36 +5,27 @@
 #include<iostream>
 #include<chrono>
 
-#include<SDL2/SDL.h>
-#include<SDL2/SDL_ttf.h>
-
-#include<GL/glew.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
 
 App::App(int width, int height, const char *title):
     m_machine(),
     m_window()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+    if (!glfwInit())
     {
-        std::cerr << "Error initializing SDL" << std::endl;
+        std::cerr << "Error initializing GLFW" << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    if (TTF_Init() < 0)
+    m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, int w, int h) { glViewport(0, 0, w, h); });
+
+    glfwMakeContextCurrent(m_window);
+
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        std::cerr << "Error initializing TTF" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-    m_theme_music = Mix_LoadWAV("assets/theme.wav");
-
-    m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
-    SDL_GL_CreateContext(m_window);
-
-    if (glewInit() != GLEW_OK)
-    {
-        std::cerr << "Error initializing GLEW" << std::endl;
+        std::cerr << "Error initializing GLAD" << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -45,27 +36,19 @@ App::App(int width, int height, const char *title):
 
 App::~App()
 {
-    SDL_Quit();
+    glfwTerminate();
 }
 
 void App::Start()
 {
-    SDL_ShowWindow(m_window);
-
-    Mix_PlayChannel(-1, m_theme_music, -1);
+    glfwShowWindow(m_window);
 
     std::chrono::high_resolution_clock::time_point t1, t2;
     t1 = t2 = std::chrono::high_resolution_clock::now();
 
-    while (!m_machine.ShouldExit())
+    while (!m_machine.ShouldExit() && !glfwWindowShouldClose(m_window))
     {
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            m_machine.HandleEvent(e);
-            
-            if (e.type == SDL_QUIT) return;
-        }
+        glfwPollEvents();
 
         t2 = std::chrono::high_resolution_clock::now();
         float dt = std::chrono::duration_cast<std::chrono::duration<float>>(t2 - t1).count();
@@ -74,9 +57,6 @@ void App::Start()
         m_machine.Update(dt);
         m_machine.Render(m_window);
 
-        SDL_GL_SwapWindow(m_window);
+        glfwSwapBuffers(m_window);
     }
-
-    Mix_CloseAudio();
-    Mix_FreeChunk(m_theme_music);
 }

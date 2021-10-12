@@ -1,10 +1,11 @@
 #include"Player.h"
 #include"Constants.h"
 
-#include<SDL2/SDL.h>
+#include<GLFW/glfw3.h>
 
 #include<cstring>
 #include<iostream>
+#include<cmath>
 
 Player::Player(float x, float y, float scale, float r, float g, float b, QuadRenderer &renderer):
     x(x), y(y), scale(scale),
@@ -22,7 +23,7 @@ Player::Player(float x, float y, float scale, float r, float g, float b, QuadRen
     m_jump_speed = info.jump_speed;
 }
 
-void Player::Render(SDL_Window *window, float camera_x, float camera_y)
+void Player::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Quad quad;
     quad.x = x - camera_x;
@@ -71,7 +72,7 @@ void Player::Update(float dt)
     m_on_ground = false;
 }
 
-void Player::HandleEvent(SDL_Event &event)
+/*void Player::HandleEvent(SDL_Event &event)
 {
     if (event.type == SDL_KEYDOWN)
     {
@@ -98,7 +99,7 @@ void Player::HandleEvent(SDL_Event &event)
             case SDLK_RIGHT: m_buttons[1] = false; break;
         }
     }
-}
+}*/
 
 void Player::SetGravity(float gravity) { m_gravity = gravity; }
 void Player::SetAirDrag(float air_drag) { m_air_drag = air_drag; }

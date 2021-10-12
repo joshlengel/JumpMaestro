@@ -2,22 +2,24 @@
 
 #include"State.h"
 #include"Quad.h"
-
-class Texture;
+#include"Text.h"
 
 class StartState : public State
 {
 public:
     void OnEnter(void *data) override;
     void OnUpdate(float dt) override;
-    void OnRender(SDL_Window *window) override;
-    void HandleEvent(SDL_Event &event) override;
+    void OnRender(GLFWwindow *window) override;
+    //void HandleEvent(SDL_Event &event) override;
     void OnExit() override;
 
 private:
-    QuadRenderer m_renderer;
+    QuadRenderer m_quad_renderer;
+    TextRenderer m_text_renderer;
 
-    Texture *m_title_text;
-    Texture *m_instruction_text;
+    Font *m_font;
+    Text *m_title_text;
+    Text *m_instruction_text;
+    Texture *tex;
     float m_elapsed, m_color;
 };

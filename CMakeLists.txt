@@ -16,14 +16,19 @@ set(DEPS ${ROOT}/deps)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(${DEPS}/JSON)
 
-set(OpenGL_GL_PREFERENCE "LEGACY")
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_subdirectory(${DEPS}/glad)
+add_subdirectory(${DEPS}/glfw)
 
 # build
 set(EXECUTABLE_OUTPUT_PATH ${BIN})
 
 file(GLOB_RECURSE sources "${INCLUDE}/*.h" "${SRC}/*.cpp")
 add_executable(JumpMaestro ${sources})
-target_include_directories(JumpMaestro PRIVATE ${INCLUDE})
-target_link_libraries(JumpMaestro PRIVATE SDL2 SDL2_image SDL2_ttf SDL2_mixer nlohmann_json::nlohmann_json GLEW::GLEW OpenGL::GL)
+target_include_directories(JumpMaestro PRIVATE
+    ${INCLUDE}
+    ${DEPS}/glad/include
+    ${DEPS}/glfw/include
+    ${DEPS}/stbimage)
+
+target_link_libraries(JumpMaestro PRIVATE glfw glad nlohmann_json::nlohmann_json)

@@ -11,7 +11,7 @@ Target::Target(float left, float right, float bottom, float top, float r, float 
     m_player(player)
 {}
 
-void Target::Render(SDL_Window *window, float camera_x, float camera_y)
+void Target::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Quad quad;
     quad.x = (AABB::l + AABB::r) * 0.5f - camera_x;
@@ -39,7 +39,7 @@ void Target::Update(float dt)
     }
 }
 
-void Target::HandleEvent(SDL_Event &event)
-{}
+/*void Target::HandleEvent(SDL_Event &event)
+{}*/
 
 bool Target::Finished() const { return m_elapsed > TARGET_MIN_REST_THRESHOLD; }

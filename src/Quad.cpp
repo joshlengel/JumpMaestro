@@ -4,7 +4,8 @@
 #include<iostream>
 #include<string>
 
-#include<SDL2/SDL.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
 
 static const char *const VERTEX_SOURCE = R"(
     #version 330
@@ -103,14 +104,8 @@ QuadRenderer::QuadRenderer()
     glDetachShader(m_program_id, m_shader_ids[0]);
     glDetachShader(m_program_id, m_shader_ids[1]);
 
-    m_default_texture = new Texture;
-    m_default_texture->Bind();
-
     unsigned char pixels[4] = { 255U, 255U, 255U, 255U };
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    m_default_texture = Texture::FromSurface(1, 1, pixels);
 }
 
 QuadRenderer::~QuadRenderer()
@@ -130,10 +125,10 @@ void QuadRenderer::Add(const Quad &quad)
     m_quads[quad.texture].push_back(quad);
 }
 
-void QuadRenderer::Render(SDL_Window *window)
+void QuadRenderer::Render(GLFWwindow *window)
 {
     int ww, wh;
-    SDL_GetWindowSize(window, &ww, &wh);
+    glfwGetWindowSize(window, &ww, &wh);
     float aspect_ratio = static_cast<float>(ww) / static_cast<float>(wh);
 
     glUseProgram(m_program_id);

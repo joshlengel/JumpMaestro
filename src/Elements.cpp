@@ -55,7 +55,7 @@ Rect::Rect(float left, float right, float bottom, float top, float r, float g, f
     Rigid(Constants::RECTS["default"].friction, Constants::RECTS["default"].bounciness, r, g, b, renderer)
 {}
 
-void Rect::Render(SDL_Window *window, float camera_x, float camera_y)
+void Rect::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Quad quad;
     quad.x = (AABB::l + AABB::r) * 0.5f - camera_x;
@@ -74,7 +74,7 @@ Bounds::Bounds(float left, float right, float bottom, float top, float r, float 
     Rigid(Constants::RECTS["default"].friction, Constants::RECTS["default"].bounciness, r, g, b, renderer)
 {}
 
-void Bounds::Render(SDL_Window *window, float camera_x, float camera_y)
+void Bounds::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Quad quad;
     quad.x = (AABBInverse::l + AABBInverse::r) * 0.5f - camera_x;
@@ -100,7 +100,7 @@ void IceRect::HandleCollision(Player &player, const Collision &collision)
     Rect::HandleCollision(player, collision);
 }
 
-void IceRect::Render(SDL_Window *window, float camera_x, float camera_y)
+void IceRect::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Rect::Render(window, camera_x, camera_y);
 }
@@ -138,7 +138,7 @@ void BouncyRect::HandleCollision(Player &player, const Collision &collision)
     Rect::HandleCollision(player, collision);
 }
 
-void BouncyRect::Render(SDL_Window *window, float camera_x, float camera_y)
+void BouncyRect::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     Rect::Render(window, camera_x, camera_y);
 }

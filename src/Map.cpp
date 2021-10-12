@@ -175,7 +175,7 @@ void Map::Update(float dt)
     m_target->Update(dt);
 }
 
-void Map::Render(SDL_Window *window, float camera_x, float camera_y)
+void Map::Render(GLFWwindow *window, float camera_x, float camera_y)
 {
     glClearColor(m_fr, m_fg, m_fb, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -194,7 +194,7 @@ void Map::Render(SDL_Window *window, float camera_x, float camera_y)
     m_renderer.Render(window);
 }
 
-void Map::HandleEvent(SDL_Event &event)
+/*void Map::HandleEvent(SDL_Event &event)
 {
     m_bounds->HandleEvent(event);
 
@@ -206,5 +206,5 @@ void Map::HandleEvent(SDL_Event &event)
     m_player->HandleEvent(event);
     m_target->HandleEvent(event);
 }
-
+*/
 bool Map::Finished() const { return m_target->Finished(); }

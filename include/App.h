@@ -2,9 +2,17 @@
 
 #include"State.h"
 
-#include<SDL2/SDL_mixer.h>
+/*
+struct AudioData
+{
+    SDL_AudioSpec spec;
+    uint8_t *buffer;
+    uint32_t length;
+    uint8_t *position;
+    int left;
+};*/
 
-struct SDL_Window;
+struct GLFWwindow;
 
 class App
 {
@@ -16,7 +24,7 @@ public:
 
 private:
     StateMachine m_machine;
-    SDL_Window *m_window;
+    GLFWwindow *m_window;
 
-    Mix_Chunk *m_theme_music;
+    //AudioData m_theme_data;
 };

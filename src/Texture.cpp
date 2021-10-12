@@ -1,7 +1,9 @@
 #include"Texture.h"
+#include"Quad.h"
 
-#include<SDL2/SDL_image.h>
+#include<stb_image.h>
 
+#include<vector>
 #include<iostream>
 
 Texture::Texture()
@@ -23,15 +25,14 @@ void Texture::Bind(size_t index)
     glBindTexture(GL_TEXTURE_2D, m_id);
 }
 
-Texture *Texture::FromSurface(SDL_Surface *surface)
+Texture *Texture::FromSurface(int width, int height, uint8_t *pixels)
 {
     Texture *texture = new Texture;
-    texture->m_width = surface->w;
-    texture->m_height = surface->h;
+    texture->m_width = width;
+    texture->m_height = height;
     texture->Bind();
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-    SDL_FreeSurface(surface);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -41,24 +42,15 @@ Texture *Texture::FromSurface(SDL_Surface *surface)
 
 Texture *Texture::FromImage(const std::string &path)
 {
-    SDL_Surface *surface = IMG_Load(path.c_str());
-    if (!surface)
+    int width, height;
+    uint8_t *pixels = stbi_load(path.c_str(), &width, &height, nullptr, STBI_rgb_alpha);
+    if (!pixels)
     {
         std::cerr << "Error loading image at '" << path << "'" << std::endl;
         return nullptr;
     }
 
-    return FromSurface(surface);
-}
-
-Texture *Texture::FromTTF(TTF_Font *font, const std::string &text)
-{
-    SDL_Surface *surface = TTF_RenderText_Blended(font, text.c_str(), { 255U, 255U, 255U });
-    if (!surface)
-    {
-        std::cerr << "Error rendering text" << std::endl;
-        return nullptr;
-    }
-
-    return FromSurface(surface);
+    Texture *texture = FromSurface(width, height, pixels);
+    stbi_image_free(pixels);
+    return texture;
 }

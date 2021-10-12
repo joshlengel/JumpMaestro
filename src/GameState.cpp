@@ -12,15 +12,15 @@ void GameState::OnUpdate(float dt)
     if (m_map->Finished()) Exit();
 }
 
-void GameState::OnRender(SDL_Window *window)
+void GameState::OnRender(GLFWwindow *window)
 {
     m_map->Render(window, 0.0f, 0.0f);
 }
 
-void GameState::HandleEvent(SDL_Event &event)
+/*void GameState::HandleEvent(SDL_Event &event)
 {
     m_map->HandleEvent(event);
-}
+}*/
 
 void GameState::OnExit()
 {

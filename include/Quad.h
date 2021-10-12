@@ -1,11 +1,11 @@
 #pragma once
 
-#include<GL/glew.h>
+#include<glad/glad.h>
 
 #include<vector>
 #include<map>
 
-struct SDL_Window;
+struct GLFWwindow;
 
 class Texture;
 
@@ -26,7 +26,7 @@ public:
     ~QuadRenderer();
 
     void Add(const Quad &quad);
-    void Render(SDL_Window *window);
+    void Render(GLFWwindow *window);
 
 private:
     std::map<Texture*, std::vector<Quad>> m_quads;

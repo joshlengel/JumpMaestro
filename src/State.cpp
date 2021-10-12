@@ -32,16 +32,16 @@ void StateMachine::Update(float dt)
     if (m_current) m_current->OnUpdate(dt);
 }
 
-void StateMachine::Render(SDL_Window *window)
+void StateMachine::Render(GLFWwindow *window)
 {
     CheckExit();
     if (m_current) m_current->OnRender(window);
 }
 
-void StateMachine::HandleEvent(SDL_Event &event)
+/*void StateMachine::HandleEvent(SDL_Event &event)
 {
     CheckExit();
     if (m_current) m_current->HandleEvent(event);
-}
+}*/
 
 bool StateMachine::ShouldExit() const { return !m_current || m_current->ShouldExit(); }
