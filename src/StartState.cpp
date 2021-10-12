@@ -31,6 +31,7 @@ void StartState::OnUpdate(float dt)
 
 void StartState::OnRender(GLFWwindow *window)
 {
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) Exit();
     glClearColor(m_color, m_color, m_color, 1.0f);
 
     m_title_text->SetColor(/*1 - m_color, 1 - m_color, 1 - m_color*/1,0,0);
